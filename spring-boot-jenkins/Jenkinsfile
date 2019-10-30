@@ -16,13 +16,25 @@ pipeline {
 
         stage ('Build') {
             steps {
-                sh 'mvn -f spring-boot-jenkins/pom.xml -Dmaven.test.failure.ignore=true install' 
+				dir('spring-boot-jenkins') {
+					sh 'mvn -DskipTests=true clean package' 
+				}
+            }
+        }
+		
+        stage ('Test') {
+            steps {
+				dir('spring-boot-jenkins') {
+					sh 'mvn test' 
+				}
             }
             post {
                 success {
-                    junit 'spring-boot-jenkins/target/surefire-reports/**/*.xml' 
+					dir("spring-boot-jenkins") {
+						junit 'target/surefire-reports/**/*.xml'
+					}
                 }
             }
-        }
+        }		
     }
 }
