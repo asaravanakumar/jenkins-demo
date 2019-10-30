@@ -20,7 +20,7 @@ pipeline {
             }
             post {
                 success {
-                    junit 'target/surefire-reports/**/*.xml' 
+                    junit 'spring-boot-jenkins/target/surefire-reports/**/*.xml' 
                 }
             }
         }
