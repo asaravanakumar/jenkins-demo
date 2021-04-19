@@ -1,0 +1,51 @@
+pipeline {
+    agent any
+	
+    tools {
+        maven 'maven3.6.2'
+        jdk 'jdk8'
+    }
+	
+    stages {
+        stage ('Initialize') {
+            steps {
+                sh '''
+					echo "Build initialized..."
+                    echo "PATH = ${PATH}"
+                    echo "M2_HOME = ${M2_HOME}"
+                '''
+            }
+        }
+
+        stage ('Build') {
+            steps {
+				dir('spring-boot-docker-jenkins') {
+					sh 'mvn -DskipTests=true clean package' 
+				}
+            }
+        }
+		
+        stage ('Test') {
+            steps {
+				dir('spring-boot-docker-jenkins') {
+					sh 'mvn test' 
+				}
+            }
+            post {
+                success {
+					dir("spring-boot-docker-jenkins") {
+						junit 'target/surefire-reports/**/*.xml'
+					}
+                }
+            }
+        }		
+		
+        stage ('Deploy') {
+            steps {
+                sh '''
+                    echo "Deploy to Server..."
+                '''
+            }
+        }		
+    }
+}
