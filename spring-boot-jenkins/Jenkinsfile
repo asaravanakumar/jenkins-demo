@@ -41,7 +41,7 @@ pipeline {
         stage ('Deploy') {
             steps {
                 sh '''
-                    echo "Deploy to Server..."
+                    echo "Deploy to Server....DONE"
                 '''
             }
         }		
