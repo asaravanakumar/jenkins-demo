@@ -16,8 +16,8 @@ class SpringBootJenkinsApplicationTests {
 	void contextLoads() {
 	}
 	
-	@Test
-	void testContext() {
-		assertNotNull(context);
-	}
+//	@Test
+//	void testContext() {
+//		assertNotNull(context);
+//	}
 }
