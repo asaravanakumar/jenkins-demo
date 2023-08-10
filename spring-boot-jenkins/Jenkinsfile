@@ -2,14 +2,15 @@ pipeline {
     agent any
     tools {
         maven 'maven3.9.0'
-        jdk 'jdk11'
+        jdk 'jdk17'
     }
     stages {
         stage ('Initialize') {
             steps {
                 sh '''
-					echo "Build initialized..."
+		    echo "Build initialized..."
                     echo "PATH = ${PATH}"
+		    echo "JAVA_HOME = ${JAVA_HOME}"
                     echo "M2_HOME = ${M2_HOME}"
                 '''
             }
@@ -17,23 +18,23 @@ pipeline {
 
         stage ('Build') {
             steps {
-				dir('spring-boot-jenkins') {
-					sh 'mvn -DskipTests=true clean package' 
-				}
+		dir('spring-boot-jenkins') {
+			sh 'mvn -DskipTests=true clean package' 
+		}
             }
         }
 		
         stage ('Test') {
             steps {
-				dir('spring-boot-jenkins') {
-					sh 'mvn test' 
-				}
+		dir('spring-boot-jenkins') {
+			sh 'mvn test' 
+		}
             }
             post {
                 success {
-					dir("spring-boot-jenkins") {
-						junit 'target/surefire-reports/**/*.xml'
-					}
+			dir("spring-boot-jenkins") {
+				junit 'target/surefire-reports/**/*.xml'
+			}
                 }
             }
         }		
