@@ -8,7 +8,7 @@ public class SpringBootJenkinsApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(SpringBootJenkinsApplication.class, args);
-		System.out.println("Jenkins Pipeline Demo...");
+		System.out.println("Welcome to Jenkins Pipeline Demo...");
 	}
 
 }
