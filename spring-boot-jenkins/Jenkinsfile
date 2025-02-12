@@ -4,10 +4,10 @@ pipeline {
         maven 'maven3.9.0'
         jdk 'jdk17'
     }
-    environment {
-        SONARQUBE_URL = 'http://localhost:9000'
-        SONARQUBE_TOKEN = credentials('sqa_33d3a63de92de3f2af5fca32053467dc14c47659') // Ensure this ID matches the stored token in Jenkins
-    }
+//     environment {
+//         SONARQUBE_URL = 'http://localhost:9000'
+//         SONARQUBE_TOKEN = credentials('sqa_33d3a63de92de3f2af5fca32053467dc14c47659') // Ensure this ID matches the stored token in Jenkins
+//     }
     stages {
         stage ('Initialize') {
             steps {
@@ -30,8 +30,8 @@ pipeline {
 
 	stage('SonarQube Analysis') {
             steps {
-                withSonarQubeEnv('SonarQube') {
-                    sh 'mvn sonar:sonar -Dsonar.projectKey=spring-boot-app -Dsonar.host.url=$SONARQUBE_URL -Dsonar.login=$SONARQUBE_TOKEN'
+                dir('spring-boot-jenkins') {
+                    sh 'mvn sonar:sonar -Dsonar.projectKey=spring-boot-app -Dsonar.host.url=http://localhost:9000 -Dsonar.login=sqa_33d3a63de92de3f2af5fca32053467dc14c47659'
                 }
             }
 	    post {
