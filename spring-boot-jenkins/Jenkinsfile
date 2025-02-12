@@ -36,10 +36,10 @@ pipeline {
             }
 	    post {
         	success {
-            		echo 'SonarQube analysis completed successfully!'
+            		echo 'SonarQube analysis completed successfully!!!'
             	}
          	failure {
-            		echo 'SonarQube analysis failed!'
+            		echo 'SonarQube analysis failed!!!'
         	}
     	   }
         }
