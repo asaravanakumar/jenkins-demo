@@ -43,15 +43,18 @@ pipeline {
                                 -Dsonar.projectKey=spring-boot-jenkins \
                                 -Dsonar.projectName=spring-boot-jenkins \
                                 -Dsonar.projectVersion=1.0 \
-                                -Dsonar.sources=src \
+                                -Dsonar.sources=src/main/java \
+                                -Dsonar.tests=src/test/java \
                                 -Dsonar.java.binaries=target/classes \
+                                -Dsonar.java.test.binaries=target/test-classes \
                                 -Dsonar.java.libraries=target/*.jar \
                                 -Dsonar.jacoco.reportPaths=target/jacoco.exec \
                                 -Dsonar.junit.reportsPath=target/surefire-reports \
                                 -Dsonar.jacoco.reportMissing.force.zero=true \
                                 -Dsonar.sourceEncoding=UTF-8 \
                                 -Dsonar.host.url=${SONAR_HOST_URL} \
-                                -Dsonar.login=${SONAR_AUTH_TOKEN}
+                                -Dsonar.login=${SONAR_AUTH_TOKEN} \
+                                -Dsonar.coverage.jacoco.xmlReportPaths=target/site/jacoco/jacoco.xml
                             """
                         }
                     }
