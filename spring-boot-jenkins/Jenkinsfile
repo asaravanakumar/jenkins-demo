@@ -28,43 +28,43 @@ pipeline {
             }
         }
 
-	stage('SonarQube Analysis') {
-            steps {
-                dir('spring-boot-jenkins') {
-                    sh 'mvn sonar:sonar -Dsonar.projectKey=spring-boot-app -Dsonar.host.url=http://localhost:9000 -Dsonar.login=sqa_33d3a63de92de3f2af5fca32053467dc14c47659'
-                }
-            }
-	    post {
-        	success {
-            		echo 'SonarQube analysis completed successfully!!!'
-            	}
-         	failure {
-            		echo 'SonarQube analysis failed!!!'
-        	}
-    	   }
-        }
+	// stage('SonarQube Analysis') {
+ //            steps {
+ //                dir('spring-boot-jenkins') {
+ //                    sh 'mvn sonar:sonar -Dsonar.projectKey=spring-boot-app -Dsonar.host.url=http://localhost:9000 -Dsonar.login=sqa_33d3a63de92de3f2af5fca32053467dc14c47659'
+ //                }
+ //            }
+	//     post {
+ //        	success {
+ //            		echo 'SonarQube analysis completed successfully!!!'
+ //            	}
+ //         	failure {
+ //            		echo 'SonarQube analysis failed!!!'
+ //        	}
+ //    	   }
+ //        }
 	    
-        stage ('Test') {
-            steps {
-		dir('spring-boot-jenkins') {
-			sh 'mvn test' 
-		}
-            }
-            post {
-                success {
-			dir("spring-boot-jenkins") {
-				junit 'target/surefire-reports/**/*.xml'
-			}
-                }
-            }
-        }		
+  //       stage ('Test') {
+  //           steps {
+		// dir('spring-boot-jenkins') {
+		// 	sh 'mvn test' 
+		// }
+  //           }
+  //           post {
+  //               success {
+		// 	dir("spring-boot-jenkins") {
+		// 		junit 'target/surefire-reports/**/*.xml'
+		// 	}
+  //               }
+  //           }
+  //       }		
 		
-        stage ('Deploy') {
-            steps {
-                sh '''
-                    echo "Deploy to Server....DONE"
-                '''
-            }
-        }		
+  //       stage ('Deploy') {
+  //           steps {
+  //               sh '''
+  //                   echo "Deploy to Server....DONE"
+  //               '''
+  //           }
+  //       }		
     }
 }
