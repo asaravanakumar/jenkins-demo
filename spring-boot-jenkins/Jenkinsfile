@@ -5,11 +5,13 @@ pipeline {
         jdk 'jdk17'
     }
     
-    // environment {
-    //     // Uncomment and configure these when you set up SonarQube
-    //     // SONARQUBE_URL = 'http://localhost:9000'
-    //     // SONARQUBE_TOKEN = credentials('sqa_33d3a63de92de3f2af5fca32053467dc14c47659')
-    // }
+    environment {
+        // SonarQube configuration
+        SCANNER_HOME = tool 'SonarQubeScanner'  // Make sure to configure this tool in Jenkins
+        SONAR_HOST_URL = 'http://sonarqube:9000'  // Update with your SonarQube server URL
+        // The token should be stored in Jenkins Credentials (use credentials ID)
+        SONAR_AUTH_TOKEN = credentials('sonar-token')  // Store your SonarQube token in Jenkins credentials
+    }
     
     stages {
         stage('Initialize') {
@@ -31,19 +33,35 @@ pipeline {
             }
         }
 
-        // Uncomment when SonarQube is set up
-        // stage('SonarQube Analysis') {
+        stage('Code Analysis') {
+            steps {
+                script {
+                    withSonarQubeEnv('SonarQube') {  // 'SonarQube' should match the name in Jenkins system config
+                        sh """
+                        mvn sonar:sonar \
+                            -Dsonar.projectKey=spring-boot-jenkins \
+                            -Dsonar.projectName=spring-boot-jenkins \
+                            -Dsonar.projectVersion=1.0 \
+                            -Dsonar.sources=src \
+                            -Dsonar.java.binaries=target/classes \
+                            -Dsonar.java.libraries=target/*.jar \
+                            -Dsonar.jacoco.reportPaths=target/jacoco.exec \
+                            -Dsonar.junit.reportsPath=target/surefire-reports \
+                            -Dsonar.jacoco.reportMissing.force.zero=true \
+                            -Dsonar.sourceEncoding=UTF-8 \
+                            -Dsonar.host.url=${SONAR_HOST_URL} \
+                            -Dsonar.login=${SONAR_AUTH_TOKEN}
+                        """
+                    }
+                }
+            }
+        }
+        
+        // Optional: Add a quality gate check
+        // stage('Quality Gate Check') {
         //     steps {
-        //         dir('spring-boot-jenkins') {
-        //             sh 'mvn sonar:sonar -Dsonar.projectKey=spring-boot-app -Dsonar.host.url=http://localhost:9000 -Dsonar.login=sqa_33d3a63de92de3f2af5fca32053467dc14c47659'
-        //         }
-        //     }
-        //     post {
-        //         success {
-        //             echo 'SonarQube analysis completed successfully!!!'
-        //         }
-        //         failure {
-        //             echo 'SonarQube analysis failed!!!'
+        //         timeout(time: 1, unit: 'MINUTES') {
+        //             waitForQualityGate abortPipeline: true
         //         }
         //     }
         // }
