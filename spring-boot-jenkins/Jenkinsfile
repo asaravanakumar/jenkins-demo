@@ -44,20 +44,20 @@ pipeline {
  //    	   }
  //        }
 	    
-  //       stage ('Test') {
-  //           steps {
-		// dir('spring-boot-jenkins') {
-		// 	sh 'mvn test' 
-		// }
-  //           }
-  //           post {
-  //               success {
-		// 	dir("spring-boot-jenkins") {
-		// 		junit 'target/surefire-reports/**/*.xml'
-		// 	}
-  //               }
-  //           }
-  //       }		
+        stage ('Test') {
+            steps {
+		dir('spring-boot-jenkins') {
+			sh 'mvn test' 
+		}
+            }
+            post {
+                success {
+			dir("spring-boot-jenkins") {
+				junit 'target/surefire-reports/**/*.xml'
+			}
+                }
+            }
+        }		
 		
   //       stage ('Deploy') {
   //           steps {
