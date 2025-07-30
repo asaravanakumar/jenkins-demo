@@ -35,17 +35,18 @@ pipeline {
 
         stage('Code Analysis') {
             steps {
-                script {
-                    withSonarQubeEnv('SonarQube') {  // 'SonarQube' should match the name in Jenkins system config
-                        sh """
-                        mvn sonar:sonar \
-                            -Dsonar.projectKey=spring-boot-jenkins \
-                            -Dsonar.projectName=spring-boot-jenkins \
-                            -Dsonar.projectVersion=1.0 \
-                            -Dsonar.sources=src \
-                            -Dsonar.java.binaries=target/classes \
-                            -Dsonar.java.libraries=target/*.jar \
-                            -Dsonar.jacoco.reportPaths=target/jacoco.exec \
+                dir('spring-boot-jenkins') {
+                    script {
+                        withSonarQubeEnv('SonarQube') {  // 'SonarQube' should match the name in Jenkins system config
+                            sh """
+                            mvn sonar:sonar \
+                                -Dsonar.projectKey=spring-boot-jenkins \
+                                -Dsonar.projectName=spring-boot-jenkins \
+                                -Dsonar.projectVersion=1.0 \
+                                -Dsonar.sources=src \
+                                -Dsonar.java.binaries=target/classes \
+                                -Dsonar.java.libraries=target/*.jar \
+                                -Dsonar.jacoco.reportPaths=target/jacoco.exec \
                             -Dsonar.junit.reportsPath=target/surefire-reports \
                             -Dsonar.jacoco.reportMissing.force.zero=true \
                             -Dsonar.sourceEncoding=UTF-8 \
