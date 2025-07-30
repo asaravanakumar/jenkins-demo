@@ -47,12 +47,12 @@ pipeline {
                                 -Dsonar.java.binaries=target/classes \
                                 -Dsonar.java.libraries=target/*.jar \
                                 -Dsonar.jacoco.reportPaths=target/jacoco.exec \
-                            -Dsonar.junit.reportsPath=target/surefire-reports \
-                            -Dsonar.jacoco.reportMissing.force.zero=true \
-                            -Dsonar.sourceEncoding=UTF-8 \
-                            -Dsonar.host.url=${SONAR_HOST_URL} \
-                            -Dsonar.login=${SONAR_AUTH_TOKEN}
-                        """
+                                -Dsonar.junit.reportsPath=target/surefire-reports \
+                                -Dsonar.jacoco.reportMissing.force.zero=true \
+                                -Dsonar.sourceEncoding=UTF-8 \
+                                -Dsonar.host.url=${SONAR_HOST_URL} \
+                                -Dsonar.login=${SONAR_AUTH_TOKEN}
+                            """
                     }
                 }
             }
