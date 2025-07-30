@@ -4,67 +4,86 @@ pipeline {
         maven 'maven3.9.0'
         jdk 'jdk17'
     }
-//     environment {
-//         SONARQUBE_URL = 'http://localhost:9000'
-//         SONARQUBE_TOKEN = credentials('sqa_33d3a63de92de3f2af5fca32053467dc14c47659') // Ensure this ID matches the stored token in Jenkins
-//     }
+    
+    environment {
+        // Uncomment and configure these when you set up SonarQube
+        // SONARQUBE_URL = 'http://localhost:9000'
+        // SONARQUBE_TOKEN = credentials('sqa_33d3a63de92de3f2af5fca32053467dc14c47659')
+    }
+    
     stages {
-        stage ('Initialize') {
+        stage('Initialize') {
             steps {
                 sh '''
-		    echo "Build initialized..."
+                    echo "Build initialized..."
                     echo "PATH = ${PATH}"
-		    echo "JAVA_HOME = ${JAVA_HOME}"
+                    echo "JAVA_HOME = ${JAVA_HOME}"
                     echo "M2_HOME = ${M2_HOME}"
                 '''
             }
         }
 
-        stage ('Build') {
+        stage('Build') {
             steps {
-		dir('spring-boot-jenkins') {
-			sh 'mvn -DskipTests=true clean package' 
-		}
+                dir('spring-boot-jenkins') {
+                    sh 'mvn -DskipTests=true clean package' 
+                }
             }
         }
 
-	// stage('SonarQube Analysis') {
- //            steps {
- //                dir('spring-boot-jenkins') {
- //                    sh 'mvn sonar:sonar -Dsonar.projectKey=spring-boot-app -Dsonar.host.url=http://localhost:9000 -Dsonar.login=sqa_33d3a63de92de3f2af5fca32053467dc14c47659'
- //                }
- //            }
-	//     post {
- //        	success {
- //            		echo 'SonarQube analysis completed successfully!!!'
- //            	}
- //         	failure {
- //            		echo 'SonarQube analysis failed!!!'
- //        	}
- //    	   }
- //        }
-	    
-        stage ('Test') {
+        // Uncomment when SonarQube is set up
+        // stage('SonarQube Analysis') {
+        //     steps {
+        //         dir('spring-boot-jenkins') {
+        //             sh 'mvn sonar:sonar -Dsonar.projectKey=spring-boot-app -Dsonar.host.url=http://localhost:9000 -Dsonar.login=sqa_33d3a63de92de3f2af5fca32053467dc14c47659'
+        //         }
+        //     }
+        //     post {
+        //         success {
+        //             echo 'SonarQube analysis completed successfully!!!'
+        //         }
+        //         failure {
+        //             echo 'SonarQube analysis failed!!!'
+        //         }
+        //     }
+        // }
+        
+        stage('Test') {
             steps {
-		dir('spring-boot-jenkins') {
-			sh 'mvn test' 
-		}
-            }
-            post {
-                success {
-			dir("spring-boot-jenkins") {
-				junit 'target/surefire-reports/**/*.xml'
-			}
+                dir('spring-boot-jenkins') {
+                    sh 'mvn clean test'
                 }
             }
-        }		
-		
-  //       stage ('Deploy') {
-  //           steps {
-  //               sh '''
-  //                   echo "Deploy to Server....DONE"
-  //               '''
-  //           }
-  //       }		
+            post {
+                always {
+                    junit 'spring-boot-jenkins/target/surefire-reports/**/*.xml'
+                }
+            }
+        }
+        
+        stage('Code Coverage') {
+            steps {
+                dir('spring-boot-jenkins') {
+                    // This will generate the JaCoCo report
+                    sh 'mvn verify'
+                    
+                    // Publish JaCoCo coverage report
+                    jacoco(
+                        execPattern: '**/target/jacoco.exec',
+                        classPattern: '**/target/classes',
+                        sourcePattern: '**/src/main/java',
+                        exclusionPattern: '**/target/generated-sources/**,**/test/**',
+                        skipCopyOfSrcFiles: false
+                    )
+                }
+            }
+        }
+
+        // Uncomment when ready to deploy
+        // stage('Deploy') {
+        //     steps {
+        //         sh 'echo "Deploy to Server....DONE"'
+        //     }
+        // }
     }
 }
