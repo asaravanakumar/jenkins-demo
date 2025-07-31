@@ -32,6 +32,37 @@ pipeline {
                 }
             }
         }
+        
+        stage('Test') {
+            steps {
+                dir('spring-boot-jenkins') {
+                    sh 'mvn clean test'
+                }
+            }
+            post {
+                always {
+                    junit 'spring-boot-jenkins/target/surefire-reports/**/*.xml'
+                }
+            }
+        }
+        
+        stage('Code Coverage') {
+            steps {
+                dir('spring-boot-jenkins') {
+                    // This will generate the JaCoCo report
+                    sh 'mvn verify'
+                    
+                    // Publish JaCoCo coverage report
+                    jacoco(
+                        execPattern: '**/target/jacoco.exec',
+                        classPattern: '**/target/classes',
+                        sourcePattern: '**/src/main/java',
+                        exclusionPattern: '**/target/generated-sources/**,**/test/**',
+                        skipCopyOfSrcFiles: false
+                    )
+                }
+            }
+        }
 
         stage('Code Analysis') {
             steps {
@@ -70,43 +101,23 @@ pipeline {
         //         }
         //     }
         // }
-        
-        stage('Test') {
+
+        stage('Build Docker Image') {
             steps {
-                dir('spring-boot-jenkins') {
-                    sh 'mvn clean test'
-                }
-            }
-            post {
-                always {
-                    junit 'spring-boot-jenkins/target/surefire-reports/**/*.xml'
-                }
-            }
-        }
-        
-        stage('Code Coverage') {
-            steps {
-                dir('spring-boot-jenkins') {
-                    // This will generate the JaCoCo report
-                    sh 'mvn verify'
-                    
-                    // Publish JaCoCo coverage report
-                    jacoco(
-                        execPattern: '**/target/jacoco.exec',
-                        classPattern: '**/target/classes',
-                        sourcePattern: '**/src/main/java',
-                        exclusionPattern: '**/target/generated-sources/**,**/test/**',
-                        skipCopyOfSrcFiles: false
-                    )
-                }
+                sh 'echo "Build Docker Image"'
             }
         }
 
-        // Uncomment when ready to deploy
-        // stage('Deploy') {
-        //     steps {
-        //         sh 'echo "Deploy to Server....DONE"'
-        //     }
-        // }
+        stage('Push Docker Image') {
+            steps {
+                sh 'echo "Push Docker Image to Registry"'
+            }
+        }
+
+        stage('Deploy to Kubernetes') {
+            steps {
+                sh 'echo "Deploy to Kubernetes"'
+            }
+        }
     }
 }
